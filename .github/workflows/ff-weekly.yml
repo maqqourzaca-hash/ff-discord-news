@@ -2,9 +2,9 @@ name: Vista previa semanal Forex Factory a Discord
 
 on:
   schedule:
-    # Domingo a las 20:00 hora de España (horario de verano, UTC+2) = 18:00 UTC.
-    # En horario de invierno cambia a "0 19 * * 0" para que sigan siendo las 20:00.
-    - cron: "0 18 * * 0"
+    # Lunes a las 3:00 hora de España (horario de verano, UTC+2) = 1:00 UTC.
+    # En horario de invierno cambia a "0 2 * * 1" para que sigan siendo las 3:00.
+    - cron: "0 1 * * 1"
   workflow_dispatch: {}
 
 jobs:
