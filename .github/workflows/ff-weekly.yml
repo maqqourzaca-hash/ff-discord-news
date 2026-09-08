@@ -1,0 +1,31 @@
+name: Vista previa semanal Forex Factory a Discord
+
+on:
+  schedule:
+    # Domingo a las 20:00 hora de España (horario de verano, UTC+2) = 18:00 UTC.
+    # En horario de invierno cambia a "0 19 * * 0" para que sigan siendo las 20:00.
+    - cron: "0 18 * * 0"
+  workflow_dispatch: {}
+
+jobs:
+  vista-previa-semanal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Ejecutar script
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          FF_IMPACTS: "High,Medium,Holiday"
+          FF_CURRENCIES: "EUR,GBP,USD"
+          FF_TIMEZONE: "Europe/Madrid"
+        run: python ff_weekly_discord.py
