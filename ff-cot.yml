@@ -1,0 +1,30 @@
+name: Informe COT semanal a Discord
+
+on:
+  schedule:
+    # Sábado a las 08:00 hora de España (horario de verano, UTC+2) = 06:00 UTC.
+    # En horario de invierno cambia a "0 7 * * 6" para que sigan siendo las 08:00.
+    # La CFTC publica el COT los viernes a las 15:30 hora de Nueva York, así que
+    # el sábado por la mañana hay margen de sobra para que el dato ya esté disponible.
+    - cron: "0 6 * * 6"
+  workflow_dispatch: {}
+
+jobs:
+  informe-cot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Ejecutar script
+        env:
+          DISCORD_WEBHOOK_URL_COT: ${{ secrets.DISCORD_WEBHOOK_URL_COT }}
+        run: python ff_cot_discord.py
