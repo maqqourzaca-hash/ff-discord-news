@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """
 Envía al mismo canal de Discord un resumen de los eventos económicos
-importantes de LA SEMANA QUE EMPIEZA, usando el feed "next week" de Forex Factory.
+importantes de LA SEMANA QUE EMPIEZA, usando el feed de Forex Factory.
+
+Pensado para ejecutarse el LUNES muy pronto por la mañana (ver
+.github/workflows/ff-weekly.yml), justo después de que el feed "esta
+semana" de Forex Factory rote a la semana que acaba de empezar.
 
 Añade:
     - Un párrafo introductorio en lenguaje natural sobre qué días concentran
@@ -13,9 +17,6 @@ Añade:
 
 No inventa horas ni eventos que no vengan en el feed: si un día no trae
 eventos que pasen los filtros, se muestra tal cual como "sin eventos".
-
-Pensado para ejecutarse los domingos por la noche
-(ver .github/workflows/ff-weekly.yml).
 
 Variables de entorno (se reutilizan los mismos filtros que el aviso diario):
     DISCORD_WEBHOOK_URL  -> (obligatoria) URL del webhook de Discord
@@ -33,7 +34,7 @@ from zoneinfo import ZoneInfo
 
 import requests
 
-FEED_URL = "https://nfs.faireconomy.media/ff_calendar_nextweek.json"
+FEED_URL = "https://nfs.faireconomy.media/ff_calendar_thisweek.json"
 
 IMPACT_EMOJI = {
     "High": "🔴",
