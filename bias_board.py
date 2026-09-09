@@ -200,8 +200,8 @@ def build_dataset() -> pd.DataFrame:
 
 def render_table_image(df: pd.DataFrame, path: str):
     n = len(df)
-    fig = plt.figure(figsize=(9.5, 1.1 * n + 3.6), facecolor=BG_COLOR)
-    gs = GridSpec(3, 1, height_ratios=[1.1, 0.11 * n + 1.4, 1.5], hspace=0.05)
+    fig = plt.figure(figsize=(9.5, 1.1 * n + 4.6), facecolor=BG_COLOR)
+    gs = GridSpec(3, 1, height_ratios=[1.1, 0.11 * n + 1.4, 2.1], hspace=0.05)
 
     # --- Cabecera -----------------------------------------------------
     ax_header = fig.add_subplot(gs[0])
@@ -271,11 +271,15 @@ def render_table_image(df: pd.DataFrame, path: str):
         "Volatilidad: si el activo se está moviendo más (Alta), menos (Baja) o igual\n"
         "(Normal) que su comportamiento habitual de las últimas semanas.\n\n"
         "Metodología fija: cruce SMA50/SMA200 + ADX(14) > 20. Datos: Twelve Data.\n"
-        "Esto es información objetiva de mercado, no es consejo de inversión."
+        "Es matemática aplicada de forma constante, no una opinión — la misma\n"
+        "fórmula siempre da el mismo resultado sobre los mismos datos.\n\n"
+        "El mercado es impredecible y no existe \"la verdad del mercado\": esto es\n"
+        "un mapa objetivo del estado actual, no una señal de entrada. Cada trader\n"
+        "debe hacer su propio análisis técnico antes de operar."
     )
     ax_legend.text(0.02, 0.95, leyenda_titulo, fontsize=12, color=TEXT_COLOR,
                     fontweight="bold", ha="left", va="top", transform=ax_legend.transAxes)
-    ax_legend.text(0.02, 0.78, leyenda_texto, fontsize=9.5, color=MUTED_COLOR,
+    ax_legend.text(0.02, 0.82, leyenda_texto, fontsize=9.5, color=MUTED_COLOR,
                     ha="left", va="top", transform=ax_legend.transAxes, linespacing=1.6)
 
     fig.patch.set_facecolor(BG_COLOR)
@@ -284,15 +288,11 @@ def render_table_image(df: pd.DataFrame, path: str):
 
 
 def send_to_discord(image_path: str, df: pd.DataFrame):
-    n_alcista = (df["Sesgo"] == "Alcista").sum()
-    n_bajista = (df["Sesgo"] == "Bajista").sum()
-    n_rango = (df["Sesgo"] == "Neutral").sum()
+    ahora = pd.Timestamp.utcnow()
+    hora_txt = ahora.strftime("%H:%M UTC")
+    fecha_txt = ahora.strftime("%d/%m/%Y")
 
-    content = (
-        f"**📊 Bias Board diario — {NOMBRE_COMUNIDAD}**\n"
-        f"Alcista: {n_alcista} · Bajista: {n_bajista} · Neutral: {n_rango}\n"
-        f"_Metodología objetiva y fija (SMA50/SMA200 + ADX). No es consejo de inversión._"
-    )
+    content = f"**📊 Bias Board — {NOMBRE_COMUNIDAD}** · {fecha_txt} {hora_txt}"
 
     with open(image_path, "rb") as f:
         files = {"file": ("bias_board.png", f, "image/png")}
